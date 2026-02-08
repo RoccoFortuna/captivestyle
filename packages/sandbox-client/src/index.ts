@@ -12,6 +12,7 @@ export interface CreateGitRepositoryOptions {
 
 export interface RequestDevServerOptions {
   repoId: string;
+  templateRepoUrl: string;
   repoUrl?: string;
 }
 
@@ -65,6 +66,7 @@ export class SandboxClient {
       mcpUrl: string;
     }>(`/repos/${opts.repoId}/devserver`, {
       method: "POST",
+      body: JSON.stringify({ templateRepoUrl: opts.templateRepoUrl }),
     });
 
     return {
