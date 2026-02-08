@@ -31,6 +31,12 @@ devserversRouter.post(
   async (req: Request, res: Response) => {
     try {
       const { repoId } = req.params;
+
+      if (!req.body?.templateRepoUrl) {
+        res.status(400).json({ error: "templateRepoUrl is required" });
+        return;
+      }
+
       const manager = getSandboxManager();
 
       // Check if sandbox already exists
@@ -52,9 +58,7 @@ devserversRouter.post(
         REPO_ID: repoId,
         GIT_TOKEN: gitToken,
         GITHUB_ORG: process.env.GITHUB_ORG!,
-        TEMPLATE_REPO_URL:
-          process.env.TEMPLATE_REPO_URL ||
-          "https://github.com/RoccoFortuna/3d-game-sandbox-template",
+        TEMPLATE_REPO_URL: req.body.templateRepoUrl,
         PRESET: req.body?.preset || "expo",
       });
 
