@@ -68,7 +68,8 @@ devserversRouter.post(
       });
     } catch (error) {
       console.error("Error creating devserver:", error);
-      res.status(500).json({ error: "Failed to create devserver" });
+      const message = error instanceof Error ? error.message : String(error);
+      res.status(500).json({ error: `Failed to create devserver: ${message}` });
     }
   }
 );
@@ -98,7 +99,10 @@ devserversRouter.post(
       const escapedMsg = message.replace(/"/g, '\\"');
       const mcpResponse = await fetch(`${existing.url}/mcp`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json, text/event-stream",
+        },
         body: JSON.stringify({
           jsonrpc: "2.0",
           id: 1,
@@ -119,7 +123,8 @@ devserversRouter.post(
       res.json({ success: true, message: `Committed: ${message}` });
     } catch (error) {
       console.error("Error committing:", error);
-      res.status(500).json({ error: "Failed to commit" });
+      const message = error instanceof Error ? error.message : String(error);
+      res.status(500).json({ error: `Failed to commit: ${message}` });
     }
   }
 );
@@ -148,7 +153,8 @@ devserversRouter.get(
       }
     } catch (error) {
       console.error("Error getting status:", error);
-      res.status(500).json({ error: "Failed to get status" });
+      const message = error instanceof Error ? error.message : String(error);
+      res.status(500).json({ error: `Failed to get status: ${message}` });
     }
   }
 );

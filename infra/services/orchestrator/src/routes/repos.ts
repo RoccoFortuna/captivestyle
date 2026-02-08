@@ -39,6 +39,7 @@ reposRouter.post("/", async (req: Request, res: Response) => {
     res.status(201).json({ repoId });
   } catch (error) {
     console.error("Error creating repo:", error);
-    res.status(500).json({ error: "Failed to create repo" });
+    const message = error instanceof Error ? error.message : String(error);
+    res.status(500).json({ error: `Failed to create repo: ${message}` });
   }
 });

@@ -65,6 +65,13 @@ export class SandboxManager {
                 cpuIdle: false, // always-on CPU
                 startupCpuBoost: true,
               },
+              startupProbe: {
+                httpGet: { path: "/health", port: 8080 },
+                initialDelaySeconds: 10,
+                periodSeconds: 5,
+                timeoutSeconds: 5,
+                failureThreshold: 60, // 10 + 60*5 = 310s max startup time
+              },
             },
           ],
         },

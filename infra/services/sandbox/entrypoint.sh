@@ -9,6 +9,11 @@ TEMPLATE_REPO_URL="${TEMPLATE_REPO_URL}"
 
 echo "[sandbox] Starting sandbox for repo ${REPO_ID}..."
 
+# 0. Configure git identity (needed before any commits)
+git config --global user.email "sandbox@captivestyle.com"
+git config --global user.name "Sandbox"
+git config --global init.defaultBranch main
+
 # 1. Clone the repo
 echo "[sandbox] Cloning repo..."
 git clone "https://x-access-token:${GIT_TOKEN}@github.com/${GITHUB_ORG}/sandbox-${REPO_ID}.git" "${WORKSPACE}"
@@ -30,11 +35,7 @@ if [ "$FILE_COUNT" -le 1 ]; then
   rm -rf /tmp/template
 fi
 
-# 3. Configure git for future commits
-git config user.email "sandbox@captivestyle.com"
-git config user.name "Sandbox"
-
-# 4. Copy cached node_modules, then install only deltas
+# 3. Copy cached node_modules, then install only deltas
 echo "[sandbox] Installing dependencies..."
 cp -a /root/template-cache/node_modules "${WORKSPACE}/node_modules" 2>/dev/null || true
 npm install --prefer-offline

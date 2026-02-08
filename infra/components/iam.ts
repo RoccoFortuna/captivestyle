@@ -8,10 +8,10 @@ export function createIam(projectId: string) {
     displayName: "Sandbox Orchestrator",
   });
 
-  // Cloud Run Developer — create/delete sandbox services
-  new gcp.projects.IAMMember("orchestrator-run-developer", {
+  // Cloud Run Admin — create/delete sandbox services + set IAM policies
+  new gcp.projects.IAMMember("orchestrator-run-admin", {
     project: projectId,
-    role: "roles/run.developer",
+    role: "roles/run.admin",
     member: orchestratorSa.email.apply((e) => `serviceAccount:${e}`),
   });
 
