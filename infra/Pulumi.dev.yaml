@@ -1,0 +1,5 @@
+config:
+  gcp:project: captivestyle-dev
+  gcp:region: europe-west1
+  captivestyle:githubOrg: captivestyle
+encryptionsalt: v1:7vlLuT/dkJc=:v1:WZAGvQ3D+tDAyirh:uCGhVQYF8CkRPz3n1hp/vmsyv1eO6A==

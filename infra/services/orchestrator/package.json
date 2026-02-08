@@ -1,0 +1,23 @@
+{
+  "name": "@captivestyle/orchestrator",
+  "version": "0.1.0",
+  "private": true,
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "start": "node dist/index.js"
+  },
+  "dependencies": {
+    "express": "^4.21.0",
+    "@google-cloud/run": "^3.2.0",
+    "@octokit/auth-app": "^7.0.0",
+    "@octokit/rest": "^21.0.0",
+    "nanoid": "^5.0.0"
+  },
+  "devDependencies": {
+    "typescript": "^5",
+    "@types/express": "^4.17.21",
+    "@types/node": "^20"
+  }
+}

@@ -1,0 +1,5 @@
+{
+  "name": "template-placeholder",
+  "version": "0.0.0",
+  "description": "PLACEHOLDER: Copy package.json from the template repo (https://github.com/RoccoFortuna/3d-game-sandbox-template) here before building the Docker image. This is used to pre-bake node_modules for fast cold starts."
+}

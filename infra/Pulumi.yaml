@@ -1,0 +1,6 @@
+name: captivestyle
+runtime:
+  name: nodejs
+  options:
+    typescript: true
+description: CaptiveStyle sandbox infrastructure
