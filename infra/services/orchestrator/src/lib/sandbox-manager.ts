@@ -61,7 +61,7 @@ export class SandboxManager {
                 value,
               })),
               resources: {
-                limits: { cpu: "2", memory: "4Gi" },
+                limits: { cpu: "4", memory: "8Gi" },
                 cpuIdle: false, // always-on CPU
                 startupCpuBoost: true,
               },

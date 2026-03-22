@@ -25,6 +25,7 @@ export function createOrchestrator(args: OrchestratorArgs) {
     name: "orchestrator",
     template: {
       serviceAccount: args.serviceAccount.email,
+      timeout: "600s",
       scaling: {
         minInstanceCount: 0,
         maxInstanceCount: 3,

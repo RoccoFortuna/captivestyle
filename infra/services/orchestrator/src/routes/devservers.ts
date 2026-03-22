@@ -1,6 +1,5 @@
 import { Router, Request, Response } from "express";
 import { SandboxManager } from "../lib/sandbox-manager";
-import { GitHubClient } from "../lib/github-client";
 
 export const devserversRouter = Router();
 
@@ -9,19 +8,6 @@ function getSandboxManager(): SandboxManager {
     process.env.GCP_PROJECT_ID!,
     process.env.GCP_REGION || "us-central1",
     process.env.SANDBOX_IMAGE_URL!
-  );
-}
-
-function getGitHubClient(): GitHubClient {
-  const privateKey = Buffer.from(
-    process.env.GITHUB_APP_PRIVATE_KEY!,
-    "base64"
-  ).toString("utf-8");
-  return new GitHubClient(
-    process.env.GITHUB_APP_ID!,
-    privateKey,
-    process.env.GITHUB_INSTALLATION_ID!,
-    process.env.GITHUB_ORG!
   );
 }
 
@@ -50,13 +36,12 @@ devserversRouter.post(
         return;
       }
 
-      // Create new sandbox
-      const githubClient = getGitHubClient();
-      const gitToken = await githubClient.getInstallationToken();
-
+      // Create new sandbox — pass GitHub App credentials so sandbox can mint fresh tokens
       const result = await manager.createService(repoId, {
         REPO_ID: repoId,
-        GIT_TOKEN: gitToken,
+        GITHUB_APP_ID: process.env.GITHUB_APP_ID!,
+        GITHUB_APP_PRIVATE_KEY: process.env.GITHUB_APP_PRIVATE_KEY!,
+        GITHUB_INSTALLATION_ID: process.env.GITHUB_INSTALLATION_ID!,
         GITHUB_ORG: process.env.GITHUB_ORG!,
         TEMPLATE_REPO_URL: req.body.templateRepoUrl,
         PRESET: req.body?.preset || "expo",
@@ -64,7 +49,7 @@ devserversRouter.post(
 
       // Wait for healthy
       console.log(`Waiting for sandbox-${repoId} to become ready...`);
-      await manager.waitForReady(result.url, 120_000);
+      await manager.waitForReady(result.url, 240_000);
 
       res.status(201).json({
         ephemeralUrl: result.url,
@@ -72,6 +57,17 @@ devserversRouter.post(
       });
     } catch (error) {
       console.error("Error creating devserver:", error);
+
+      // Clean up failed sandbox service
+      try {
+        const { repoId } = req.params;
+        const manager = getSandboxManager();
+        await manager.deleteService(repoId);
+        console.log(`Cleaned up failed sandbox sandbox-${repoId}`);
+      } catch (cleanupErr) {
+        console.error("Cleanup failed:", cleanupErr);
+      }
+
       const message = error instanceof Error ? error.message : String(error);
       res.status(500).json({ error: `Failed to create devserver: ${message}` });
     }
